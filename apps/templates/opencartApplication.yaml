@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  argocd.argoproj.io/sync-wave: "-2"
+  name: opencart-application
+  namespace: default
+
+spec:
+  project: default 
+
+  source:
+    chart: opencart
+    helm:
+      values: |
+        service:
+          type: ClusterIP
+          ports:
+            http: 81
+            https: 444
+        ingress:
+          enabled: true
+        mariadb:
+          auth:
+            existingSecret: "opencart-application-mariadb"
+        replicaCount: 2
+    repoURL: https://charts.bitnami.com/bitnami
+    targetRevision: 12.2.5
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: opencart
+
+  syncPolicy:
+  # uncomment to create namespace if not present
+    syncOptions:
+    - CreateNamespace=true
+
+    automated:
+      selfHeal: true
+      prune: true
