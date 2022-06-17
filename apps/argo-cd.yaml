@@ -3,13 +3,13 @@ kind: Application
 metadata:
   #argocd.argoproj.io/sync-wave: "-2"
   name: argo-cd
-  namespace: default
+  namespace: argo-cd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
     server: https://kubernetes.default.svc
-    namespace: 
+    namespace: argo-cd
   project: default
   source:
     path: apps/templates/
